@@ -51,7 +51,14 @@ namespace ConsoleUI
 
             Console.WriteLine("----------------------------------------------------------------------------------------------------------------------");
 
-
+            // Brand ID si 1 olanlari listeleme
+            Car car2 = new Car() { CarId = 6, BrandId = 1, ColorId = 1, DailyPrice = 100000, Description = "Mercedes C200", ModelYear = 2004 };
+            //Yeni olusturulan nesne listeye eklendi.
+            carManager.Add(car2);
+            foreach (var car in carManager.GetAllByBrandId(1))
+            {
+                Console.WriteLine(car.Description);
+            }
         }
     }
 }

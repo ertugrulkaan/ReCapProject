@@ -45,6 +45,11 @@ namespace DataAccess.Concrete.InMemory
             return _cars;
         }
 
+        public List<Car> GetAllByBrandId(int brandId)
+        {
+            return _cars.Where(c => c.BrandId == brandId).ToList();
+        }
+
         public Car GetById(int carId)
         {
             // carid ye gore aradigimizdan tek araba doneceginden liste dondurmeye gerek yok.
