@@ -1,0 +1,156 @@
+﻿
+
+--select c.ID,bs.BrandName,cs.ColorName,c.ModelYear,c.DailyPrice,c.Description from Cars c
+--inner join colors cs on cs.ID = c.ColorId
+--inner join Brands bs on bs.ID = c.BrandId
+
+
+ALTER TABLE [dbo].[Cars] DROP CONSTRAINT [FK_Cars_Colors]
+GO
+ALTER TABLE [dbo].[Cars] DROP CONSTRAINT [FK_Cars_Brands]
+GO
+ALTER TABLE [dbo].[Colors] DROP CONSTRAINT [UK_ColorName]
+GO
+ALTER TABLE [dbo].[Brands] DROP CONSTRAINT [UK_BrandName]
+GO
+DROP TABLE [dbo].[Colors]
+GO
+DROP TABLE [dbo].[Cars]
+GO
+DROP TABLE [dbo].[Brands]
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Brands](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[BrandName] [nvarchar](30) NOT NULL,
+ CONSTRAINT [PK_Brands] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Cars](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[ColorId] [int] NOT NULL,
+	[BrandId] [int] NOT NULL,
+	[ModelYear] [nvarchar](4) NOT NULL,
+	[DailyPrice] [decimal](18, 2) NOT NULL,
+	[Description] [nvarchar](200) NOT NULL,
+ CONSTRAINT [PK_Cars] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Colors](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[ColorName] [nvarchar](30) NOT NULL,
+ CONSTRAINT [PK_Colors] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET IDENTITY_INSERT [dbo].[Brands] ON 
+
+GO
+INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (2, N'BMW')
+GO
+INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (10, N'Citroen')
+GO
+INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (8, N'Fiat')
+GO
+INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (5, N'Honda')
+GO
+INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (1, N'Mercedes Benz')
+GO
+INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (7, N'Peugeout')
+GO
+INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (6, N'Renault')
+GO
+INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (4, N'Toyota')
+GO
+INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (3, N'Volvo')
+GO
+SET IDENTITY_INSERT [dbo].[Brands] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Cars] ON 
+
+GO
+INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [ModelYear], [DailyPrice], [Description]) VALUES (1, 1, 1, N'2018', CAST(300.00 AS Decimal(18, 2)), N'Dizel, Düz vites, Sunroof var')
+GO
+INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [ModelYear], [DailyPrice], [Description]) VALUES (2, 8, 6, N'2020', CAST(185.00 AS Decimal(18, 2)), N'Clio Hatchback, Düz vites dizel, 100km de 3.5lt yakar')
+GO
+INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [ModelYear], [DailyPrice], [Description]) VALUES (3, 6, 7, N'2019', CAST(185.00 AS Decimal(18, 2)), N'Dizel, Otomatik sedan, uzun yol için birebir')
+GO
+INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [ModelYear], [DailyPrice], [Description]) VALUES (4, 10, 5, N'2021', CAST(275.00 AS Decimal(18, 2)), N'Civic Type R')
+GO
+INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [ModelYear], [DailyPrice], [Description]) VALUES (5, 3, 2, N'2021', CAST(400.00 AS Decimal(18, 2)), N'3.20i Son Sürati 250kmh ')
+GO
+SET IDENTITY_INSERT [dbo].[Cars] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Colors] ON 
+
+GO
+INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (7, N'Antrasit')
+GO
+INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (8, N'Beyaz')
+GO
+INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (6, N'Gri')
+GO
+INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (2, N'Kahverengi')
+GO
+INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (10, N'Kırmızı')
+GO
+INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (5, N'Lacivert')
+GO
+INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (4, N'Mavi')
+GO
+INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (9, N'Sarı')
+GO
+INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (1, N'Siyah')
+GO
+INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (3, N'Turuncu')
+GO
+SET IDENTITY_INSERT [dbo].[Colors] OFF
+GO
+SET ANSI_PADDING ON
+
+GO
+ALTER TABLE [dbo].[Brands] ADD  CONSTRAINT [UK_BrandName] UNIQUE NONCLUSTERED 
+(
+	[BrandName] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+
+GO
+ALTER TABLE [dbo].[Colors] ADD  CONSTRAINT [UK_ColorName] UNIQUE NONCLUSTERED 
+(
+	[ColorName] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[Cars]  WITH CHECK ADD  CONSTRAINT [FK_Cars_Brands] FOREIGN KEY([BrandId])
+REFERENCES [dbo].[Brands] ([ID])
+GO
+ALTER TABLE [dbo].[Cars] CHECK CONSTRAINT [FK_Cars_Brands]
+GO
+ALTER TABLE [dbo].[Cars]  WITH CHECK ADD  CONSTRAINT [FK_Cars_Colors] FOREIGN KEY([ColorId])
+REFERENCES [dbo].[Colors] ([ID])
+GO
+ALTER TABLE [dbo].[Cars] CHECK CONSTRAINT [FK_Cars_Colors]
+GO

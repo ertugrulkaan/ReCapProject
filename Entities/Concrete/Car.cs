@@ -8,7 +8,7 @@ namespace Entities.Concrete
     //Car nesnesi veritabanında bir tablodur.
     public class Car : IEntity
     {
-        public int CarId { get; set; }
+        public int ID { get; set; }
         public int BrandId { get; set; }
         public int ColorId { get; set; }
         public int ModelYear { get; set; }
