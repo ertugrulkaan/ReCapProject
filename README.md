@@ -1,4 +1,4 @@
 # ReCapProject
 ReCapProject-20210131
 
-Konsole projesinin içerısınde sql kodlarını bulabilirsiniz.
+Dataaccess projesinin içerısınde sql kodlarını bulabilirsiniz.
