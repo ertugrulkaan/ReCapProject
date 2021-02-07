@@ -62,6 +62,82 @@ namespace ConsoleUI
             //    Console.WriteLine(car.Description);
             //}
             #endregion
+            //SUBAT7ODEVONCESI();
+            #region CAR CRUD OPERATIONS
+            // CAR CRUD OPERATIONS 
+            CarManager carManager = new CarManager(new EfCarDal());
+            // CARDTO LIST ALL
+            foreach (var car in carManager.GetAllWithDetails())
+            {
+                Console.WriteLine(car.CarName + " - " + car.BrandName + " - " + car.ColorName + " - " + car.DailyPrice);
+            }
+            Console.WriteLine("---------------------------------------------------------------------------------------------");
+            Console.WriteLine("---------------------------------------------------------------------------------------------");
+            Console.WriteLine("---------------------------------------------------------------------------------------------");
+            Car car1 = new Car()
+            {
+                BrandId = 10,
+                ColorId = 2,
+                DailyPrice = 195,
+                ModelYear = 2019,
+                Description = "Az yakar cok kacar",
+                CarName = "Citroen C5 "
+            };
+
+            // ADD AND LIST LAST ADDED CAR
+            //carManager.Add(car1);
+            Console.WriteLine(carManager.GetLastAddedCar().CarName + " - " + carManager.GetLastAddedCar().ID);
+            // DELETE CAR WITH ID = 8
+            //carManager.Delete(new Car { ID = 8 });
+            // UPDATE CAR WITH ID = 11 
+            Car car2 = new Car()
+            {
+                ID = 11,
+                BrandId = 10,
+                ColorId = 2,
+                DailyPrice = 195,
+                ModelYear = 2019,
+                Description = "Otomatik vites dizel ekonomik",
+                CarName = "Citroen C3 "
+            };
+            //carManager.Update(car2);
+            Console.WriteLine(carManager.GetById(11).Description + " - " + carManager.GetById(11).CarName);
+            #endregion
+            #region COLOR CRUD OPERATIONS
+            ColorManager colorManager = new ColorManager(new EfColorDal());
+            foreach (var color in colorManager.GetAll())
+            {
+                Console.WriteLine(color.ID + " - " + color.ColorName);
+            }
+            foreach (var color in colorManager.GetAll())
+            {
+                if (color.ColorName=="test")
+                {
+                    //colorManager.Delete(color);
+                }
+            }
+            Color color1 = new Color()
+            {
+                ColorName = "asddsa"
+            };
+            //colorManager.Add(color1);
+            //colorManager.Update(new Color { ID = 16, ColorName = "Yesil" });
+            #endregion
+            #region BRAND CRUD OPERATIONS
+            BrandManager brandManager = new BrandManager(new EfBrandDal());
+            foreach (var brand in brandManager.GetAll())
+            {
+                Console.WriteLine(brand.ID + " - " + brand.BrandName);
+            }
+            //brandManager.Add(new Brand { BrandName = "Ferrari" });
+            //brandManager.Update(new Brand { ID = 11, BrandName = "Pagani" });
+            //brandManager.Delete(new Brand { ID = 11});
+            #endregion
+
+        }
+
+        private static void SUBAT7ODEVONCESI()
+        {
             CarManager carManager = new CarManager(new EfCarDal());
             ColorManager colorManager = new ColorManager(new EfColorDal());
             BrandManager brandManager = new BrandManager(new EfBrandDal());
@@ -92,7 +168,7 @@ namespace ConsoleUI
                 case 2:
                     Console.WriteLine("Silmek istediginiz rengi nasil arayalim ? ID = 1 - Renk Adi != 1");
                     int userInputType = Convert.ToInt32(Console.ReadLine());
-                    if (userInputType==1)
+                    if (userInputType == 1)
                     {
                         Console.WriteLine("ID yi giriniz");
                         colorManager.Delete(colorManager.GetById(Convert.ToInt32(Console.ReadLine())));
@@ -113,11 +189,11 @@ namespace ConsoleUI
                         Console.WriteLine("ID yi giriniz");
                         int colorId = Convert.ToInt32(Console.ReadLine());
                         Console.WriteLine("Güncellenmek istenen rengin adı : " + colorManager.GetById(colorId).ColorName + "\nGüncellemeye devam edilsin mi? (E/H)");
-                        bool yesorno = Console.ReadLine() == "E" ? true:false;
+                        bool yesorno = Console.ReadLine() == "E" ? true : false;
                         if (yesorno)
                         {
                             Console.WriteLine("Yeni adı giriniz");
-                            
+
                             colorManager.Update(new Color { ID = colorId, ColorName = Console.ReadLine() });
                             Console.WriteLine("Basarili");
                         }
@@ -137,7 +213,7 @@ namespace ConsoleUI
                         {
                             Console.WriteLine("Yeni adı giriniz");
 
-                            colorManager.Update(new Color { ID=ID, ColorName = Console.ReadLine() });
+                            colorManager.Update(new Color { ID = ID, ColorName = Console.ReadLine() });
                             Console.WriteLine("Basarili");
                         }
 
