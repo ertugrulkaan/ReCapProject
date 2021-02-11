@@ -1,23 +1,100 @@
-﻿
-
---select c.ID,bs.BrandName,cs.ColorName,c.ModelYear,c.DailyPrice,c.Description from Cars c
---inner join colors cs on cs.ID = c.ColorId
---inner join Brands bs on bs.ID = c.BrandId
-
-
+﻿ALTER TABLE [dbo].[Rentals] DROP CONSTRAINT [FK_Rentals_Users]
+GO
+ALTER TABLE [dbo].[Rentals] DROP CONSTRAINT [FK_Rentals_Cars]
+GO
+ALTER TABLE [dbo].[Customers] DROP CONSTRAINT [FK_Customers_Users1]
+GO
 ALTER TABLE [dbo].[Cars] DROP CONSTRAINT [FK_Cars_Colors]
 GO
 ALTER TABLE [dbo].[Cars] DROP CONSTRAINT [FK_Cars_Brands]
 GO
 ALTER TABLE [dbo].[Colors] DROP CONSTRAINT [UK_ColorName]
 GO
-ALTER TABLE [dbo].[Brands] DROP CONSTRAINT [UK_BrandName]
+DROP TABLE [dbo].[Users]
+GO
+DROP TABLE [dbo].[Rentals]
+GO
+DROP TABLE [dbo].[Customers]
 GO
 DROP TABLE [dbo].[Colors]
 GO
 DROP TABLE [dbo].[Cars]
 GO
 DROP TABLE [dbo].[Brands]
+GO
+DROP DATABASE [CarRentalDb]
+GO
+CREATE DATABASE [CarRentalDb]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'CarRentalDb', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\CarRentalDb.mdf' , SIZE = 5120KB , MAXSIZE = UNLIMITED, FILEGROWTH = 1024KB )
+ LOG ON 
+( NAME = N'CarRentalDb_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\CarRentalDb_log.ldf' , SIZE = 2048KB , MAXSIZE = 2048GB , FILEGROWTH = 10%)
+GO
+ALTER DATABASE [CarRentalDb] SET COMPATIBILITY_LEVEL = 120
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [CarRentalDb].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [CarRentalDb] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [CarRentalDb] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [CarRentalDb] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [CarRentalDb] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [CarRentalDb] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [CarRentalDb] SET AUTO_CLOSE OFF 
+GO
+ALTER DATABASE [CarRentalDb] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [CarRentalDb] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [CarRentalDb] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [CarRentalDb] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [CarRentalDb] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [CarRentalDb] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [CarRentalDb] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [CarRentalDb] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [CarRentalDb] SET  DISABLE_BROKER 
+GO
+ALTER DATABASE [CarRentalDb] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [CarRentalDb] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [CarRentalDb] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [CarRentalDb] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [CarRentalDb] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [CarRentalDb] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [CarRentalDb] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [CarRentalDb] SET RECOVERY SIMPLE 
+GO
+ALTER DATABASE [CarRentalDb] SET  MULTI_USER 
+GO
+ALTER DATABASE [CarRentalDb] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [CarRentalDb] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [CarRentalDb] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [CarRentalDb] SET TARGET_RECOVERY_TIME = 0 SECONDS 
+GO
+ALTER DATABASE [CarRentalDb] SET DELAYED_DURABILITY = DISABLED 
 GO
 SET ANSI_NULLS ON
 GO
@@ -41,7 +118,8 @@ CREATE TABLE [dbo].[Cars](
 	[ID] [int] IDENTITY(1,1) NOT NULL,
 	[ColorId] [int] NOT NULL,
 	[BrandId] [int] NOT NULL,
-	[ModelYear] [nvarchar](4) NOT NULL,
+	[CarName] [nvarchar](50) NOT NULL,
+	[ModelYear] [int] NOT NULL,
 	[DailyPrice] [decimal](18, 2) NOT NULL,
 	[Description] [nvarchar](200) NOT NULL,
  CONSTRAINT [PK_Cars] PRIMARY KEY CLUSTERED 
@@ -65,83 +143,168 @@ CREATE TABLE [dbo].[Colors](
 ) ON [PRIMARY]
 
 GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Customers](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[UserID] [int] NOT NULL,
+	[CompanyName] [nvarchar](50) NOT NULL,
+ CONSTRAINT [PK_Customers_1] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Rentals](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[CarID] [int] NOT NULL,
+	[CustomerID] [int] NOT NULL,
+	[RentDate] [smalldatetime] NOT NULL,
+	[ReturnDate] [smalldatetime] NULL,
+ CONSTRAINT [PK_Rentals] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Users](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[FirstName] [nvarchar](30) NOT NULL,
+	[LastName] [nvarchar](30) NOT NULL,
+	[Email] [nvarchar](50) NOT NULL,
+	[Password] [nvarchar](30) NOT NULL,
+ CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
 SET IDENTITY_INSERT [dbo].[Brands] ON 
 
 GO
-INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (2, N'BMW')
-GO
-INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (10, N'Citroen')
-GO
-INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (8, N'Fiat')
-GO
-INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (5, N'Honda')
-GO
 INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (1, N'Mercedes Benz')
 GO
-INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (7, N'Peugeout')
+INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (2, N'BMW')
 GO
-INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (6, N'Renault')
+INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (3, N'Volvo')
 GO
 INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (4, N'Toyota')
 GO
-INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (3, N'Volvo')
+INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (5, N'Honda')
+GO
+INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (6, N'Renault')
+GO
+INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (7, N'Peugeout')
+GO
+INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (8, N'Fiat')
+GO
+INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (10, N'Citroen')
 GO
 SET IDENTITY_INSERT [dbo].[Brands] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Cars] ON 
 
 GO
-INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [ModelYear], [DailyPrice], [Description]) VALUES (1, 1, 1, N'2018', CAST(300.00 AS Decimal(18, 2)), N'Dizel, Düz vites, Sunroof var')
+INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [CarName], [ModelYear], [DailyPrice], [Description]) VALUES (1, 1, 1, N'Mercedes Benz E200', 2018, CAST(300.00 AS Decimal(18, 2)), N'Dizel, Düz vites, Sunroof var')
 GO
-INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [ModelYear], [DailyPrice], [Description]) VALUES (2, 8, 6, N'2020', CAST(185.00 AS Decimal(18, 2)), N'Clio Hatchback, Düz vites dizel, 100km de 3.5lt yakar')
+INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [CarName], [ModelYear], [DailyPrice], [Description]) VALUES (2, 8, 6, N'Renault Clio', 2020, CAST(185.00 AS Decimal(18, 2)), N'Clio Hatchback, Düz vites dizel, 100km de 3.5lt yakar')
 GO
-INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [ModelYear], [DailyPrice], [Description]) VALUES (3, 6, 7, N'2019', CAST(185.00 AS Decimal(18, 2)), N'Dizel, Otomatik sedan, uzun yol için birebir')
+INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [CarName], [ModelYear], [DailyPrice], [Description]) VALUES (3, 6, 7, N'Peugeout 305', 2019, CAST(185.00 AS Decimal(18, 2)), N'Dizel, Otomatik sedan, uzun yol için birebir')
 GO
-INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [ModelYear], [DailyPrice], [Description]) VALUES (4, 10, 5, N'2021', CAST(275.00 AS Decimal(18, 2)), N'Civic Type R')
+INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [CarName], [ModelYear], [DailyPrice], [Description]) VALUES (4, 10, 5, N'Honda Civic Type R', 2021, CAST(275.00 AS Decimal(18, 2)), N'Civic Type R')
 GO
-INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [ModelYear], [DailyPrice], [Description]) VALUES (5, 3, 2, N'2021', CAST(400.00 AS Decimal(18, 2)), N'3.20i Son Sürati 250kmh ')
+INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [CarName], [ModelYear], [DailyPrice], [Description]) VALUES (5, 3, 2, N'BMW 3.20i', 2021, CAST(400.00 AS Decimal(18, 2)), N'3.20i Son Sürati 250kmh ')
+GO
+INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [CarName], [ModelYear], [DailyPrice], [Description]) VALUES (6, 3, 4, N'Toyota Corolla', 2019, CAST(200.00 AS Decimal(18, 2)), N'Dizel, Otomatik sedan, uzun yol için birebir')
+GO
+INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [CarName], [ModelYear], [DailyPrice], [Description]) VALUES (7, 5, 7, N'Peugeout 305', 2017, CAST(150.00 AS Decimal(18, 2)), N'Dizel, Otomatik sedan, uzun yol için birebir')
+GO
+INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [CarName], [ModelYear], [DailyPrice], [Description]) VALUES (9, 6, 7, N'Peugeout 307', 2016, CAST(140.00 AS Decimal(18, 2)), N'Dizel, Düz vites, Sunroof var')
+GO
+INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [CarName], [ModelYear], [DailyPrice], [Description]) VALUES (10, 9, 2, N'BMW 5.20i', 2021, CAST(350.00 AS Decimal(18, 2)), N'Dizel, Düz vites, Sunroof var')
+GO
+INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [CarName], [ModelYear], [DailyPrice], [Description]) VALUES (11, 2, 10, N'Citroen C3 ', 2019, CAST(195.00 AS Decimal(18, 2)), N'Otomatik vites dizel ekonomik')
 GO
 SET IDENTITY_INSERT [dbo].[Cars] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Colors] ON 
 
 GO
-INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (7, N'Antrasit')
-GO
-INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (8, N'Beyaz')
-GO
-INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (6, N'Gri')
+INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (1, N'Siyah')
 GO
 INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (2, N'Kahverengi')
 GO
-INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (10, N'Kırmızı')
-GO
-INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (5, N'Lacivert')
+INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (3, N'Turuncu')
 GO
 INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (4, N'Mavi')
 GO
+INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (5, N'Lacivert')
+GO
+INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (6, N'Gri')
+GO
+INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (7, N'Mor')
+GO
+INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (8, N'Beyaz')
+GO
 INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (9, N'Sarı')
 GO
-INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (1, N'Siyah')
+INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (10, N'Kırmızı')
 GO
-INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (3, N'Turuncu')
+INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (13, N'Pembe')
+GO
+INSERT [dbo].[Colors] ([ID], [ColorName]) VALUES (16, N'Yesil')
 GO
 SET IDENTITY_INSERT [dbo].[Colors] OFF
 GO
-SET ANSI_PADDING ON
+SET IDENTITY_INSERT [dbo].[Customers] ON 
 
 GO
-ALTER TABLE [dbo].[Brands] ADD  CONSTRAINT [UK_BrandName] UNIQUE NONCLUSTERED 
-(
-	[BrandName] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+INSERT [dbo].[Customers] ([ID], [UserID], [CompanyName]) VALUES (1, 3, N'TEST SIRKETI')
 GO
-SET ANSI_PADDING ON
+INSERT [dbo].[Customers] ([ID], [UserID], [CompanyName]) VALUES (3, 1, N'ALI SIRKETI')
+GO
+SET IDENTITY_INSERT [dbo].[Customers] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Rentals] ON 
 
+GO
+INSERT [dbo].[Rentals] ([ID], [CarID], [CustomerID], [RentDate], [ReturnDate]) VALUES (12, 1, 1, CAST(N'2021-02-11 23:55:00' AS SmallDateTime), CAST(N'2021-02-13 23:55:00' AS SmallDateTime))
+GO
+INSERT [dbo].[Rentals] ([ID], [CarID], [CustomerID], [RentDate], [ReturnDate]) VALUES (13, 2, 3, CAST(N'2021-02-11 23:56:00' AS SmallDateTime), CAST(N'2021-02-13 00:00:00' AS SmallDateTime))
+GO
+INSERT [dbo].[Rentals] ([ID], [CarID], [CustomerID], [RentDate], [ReturnDate]) VALUES (14, 3, 1, CAST(N'2021-02-11 23:56:00' AS SmallDateTime), NULL)
+GO
+INSERT [dbo].[Rentals] ([ID], [CarID], [CustomerID], [RentDate], [ReturnDate]) VALUES (15, 4, 3, CAST(N'2021-02-11 23:56:00' AS SmallDateTime), CAST(N'2021-02-13 23:56:00' AS SmallDateTime))
+GO
+INSERT [dbo].[Rentals] ([ID], [CarID], [CustomerID], [RentDate], [ReturnDate]) VALUES (17, 2, 3, CAST(N'2021-02-17 00:01:00' AS SmallDateTime), CAST(N'2021-02-27 00:01:00' AS SmallDateTime))
+GO
+SET IDENTITY_INSERT [dbo].[Rentals] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Users] ON 
+
+GO
+INSERT [dbo].[Users] ([ID], [FirstName], [LastName], [Email], [Password]) VALUES (1, N'Ertuğrul Kaan', N'Özdemir', N'test@test.com', N'12345')
+GO
+INSERT [dbo].[Users] ([ID], [FirstName], [LastName], [Email], [Password]) VALUES (3, N'Ali', N'Ozdemir', N'asdasd@test.com', N'12345')
+GO
+SET IDENTITY_INSERT [dbo].[Users] OFF
 GO
 ALTER TABLE [dbo].[Colors] ADD  CONSTRAINT [UK_ColorName] UNIQUE NONCLUSTERED 
 (
-	[ColorName] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 GO
 ALTER TABLE [dbo].[Cars]  WITH CHECK ADD  CONSTRAINT [FK_Cars_Brands] FOREIGN KEY([BrandId])
@@ -153,4 +316,21 @@ ALTER TABLE [dbo].[Cars]  WITH CHECK ADD  CONSTRAINT [FK_Cars_Colors] FOREIGN KE
 REFERENCES [dbo].[Colors] ([ID])
 GO
 ALTER TABLE [dbo].[Cars] CHECK CONSTRAINT [FK_Cars_Colors]
+GO
+ALTER TABLE [dbo].[Customers]  WITH CHECK ADD  CONSTRAINT [FK_Customers_Users1] FOREIGN KEY([UserID])
+REFERENCES [dbo].[Users] ([ID])
+GO
+ALTER TABLE [dbo].[Customers] CHECK CONSTRAINT [FK_Customers_Users1]
+GO
+ALTER TABLE [dbo].[Rentals]  WITH CHECK ADD  CONSTRAINT [FK_Rentals_Cars] FOREIGN KEY([CarID])
+REFERENCES [dbo].[Cars] ([ID])
+GO
+ALTER TABLE [dbo].[Rentals] CHECK CONSTRAINT [FK_Rentals_Cars]
+GO
+ALTER TABLE [dbo].[Rentals]  WITH CHECK ADD  CONSTRAINT [FK_Rentals_Users] FOREIGN KEY([CustomerID])
+REFERENCES [dbo].[Users] ([ID])
+GO
+ALTER TABLE [dbo].[Rentals] CHECK CONSTRAINT [FK_Rentals_Users]
+GO
+ALTER DATABASE [CarRentalDb] SET  READ_WRITE 
 GO

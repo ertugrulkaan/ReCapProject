@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Business.Constants;
+using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using System;
@@ -15,73 +17,90 @@ namespace Business.Concrete
         {
             _colorDal = colorDal;
         }
-        public void Add(Entities.Concrete.Color color)
+        public IResult Add(Entities.Concrete.Color color)
         {
             try
             {
                 if (color.ColorName.Length > 2)
                 {
                     _colorDal.Add(color);
-                    Console.WriteLine("Başarılı!");
+                    return new SuccessResult(Messages.ColorAdded);
                 }
-                else
-                {
-                    Console.WriteLine("Nesne hatalı üretilmiş alanları kontrol et!");
-                }
+                return new ErrorResult(Messages.ColorCannotAdded);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                return new ErrorResult(Messages.ColorCannotAdded + Environment.NewLine + ex.Message);
             }
         }
-
-        public void Delete(Entities.Concrete.Color color)
+        public IResult Delete(Entities.Concrete.Color color)
         {
             try
             {
                 _colorDal.Delete(color);
-                Console.WriteLine("Nesne Silindi");
+                return new SuccessResult(Messages.ColorDeleted);
+
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                return new ErrorResult(Messages.ColorCannotDeleted + Environment.NewLine + ex.Message);
             }
         }
-
-        public List<Entities.Concrete.Color> GetAll()
-        {
-            return _colorDal.GetAll();
-        }
-
-        public Entities.Concrete.Color GetById(int colorId)
-        {
-            return _colorDal.Get(c=>c.ID==colorId);
-        }
-
-        public Entities.Concrete.Color GetByName(string colorName)
-        {
-            //TEST ET
-            return _colorDal.Get(c => c.ColorName.ToLower().Contains(colorName));
-        }
-
-        public void Update(Entities.Concrete.Color color)
+        public IResult Update(Entities.Concrete.Color color)
         {
             try
             {
                 if (color.ColorName.Length > 2)
                 {
-                    _colorDal.Update(color);
-                    Console.WriteLine("Başarılı!");
+                    _colorDal.Update(color); 
+                    return new SuccessResult(Messages.ColorUpdated);
                 }
-                else
-                {
-                    Console.WriteLine("Nesne hatalı üretilmiş alanları kontrol et!");
-                }
+                return new ErrorResult(Messages.ColorCannotUpdated);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                return new ErrorResult(Messages.ColorCannotUpdated + Environment.NewLine + ex.Message);
             }
         }
+
+        public IDataResult<List<Entities.Concrete.Color>> GetAll()
+        {
+            try
+            {
+                return new SuccessDataResult<List<Entities.Concrete.Color>>(_colorDal.GetAll());
+
+            }
+            catch (Exception ex)
+            {
+                return new ErrorDataResult<List<Entities.Concrete.Color>>(ex.Message);
+            }
+        }
+
+        public IDataResult<Entities.Concrete.Color> GetById(int colorId)
+        {
+            try
+            {
+                return new SuccessDataResult<Entities.Concrete.Color>(_colorDal.Get(c => c.ID == colorId));
+
+            }
+            catch (Exception ex)
+            {
+                return new ErrorDataResult<Entities.Concrete.Color>(ex.Message);
+            }
+        }
+
+        public IDataResult<Entities.Concrete.Color> GetByName(string colorName)
+        {
+            try
+            {
+                return new SuccessDataResult<Entities.Concrete.Color>(_colorDal.Get(c => c.ColorName.ToLower().Contains(colorName)));
+
+            }
+            catch (Exception ex)
+            {
+                return new ErrorDataResult<Entities.Concrete.Color>(ex.Message);
+            }
+            //TEST ET
+        }        
     }
 }

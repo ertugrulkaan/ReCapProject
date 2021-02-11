@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Business.Constants;
+using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
@@ -19,7 +21,7 @@ namespace Business.Concrete
             _carDal = carDal;
         }
 
-        public void Add(Car car)
+        public IResult Add(Car car)
         {
             // ORNEGIN EKLENEN ARABANIN GUNLUK FIYATI > 0 OLMALI
             try
@@ -27,102 +29,145 @@ namespace Business.Concrete
                 if (car.DailyPrice > 0)
                 {
                     _carDal.Add(car);
-                    Console.WriteLine("Başarılı!");
+                    return new SuccessResult(Messages.CarAdded);
                 }
-                else
-                {
-                    Console.WriteLine("Nesne hatalı üretilmiş alanları kontrol et!");
-                }
+                return new ErrorResult(Messages.CarCannotAdded);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                return new ErrorResult(Messages.CarCannotAdded + Environment.NewLine + ex.Message);
             }
         }
-
-        public void Delete(Car car)
+        public IResult Delete(Car car)
         {
             try
             {
                 _carDal.Delete(car);
+                return new SuccessResult(Messages.CarDeleted);
+
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                return new ErrorResult(Messages.CarCannotDeleted + Environment.NewLine + ex.Message);
             }
         }
-
-        public List<Car> GetAll()
-        {
-            try
-            {
-                return _carDal.GetAll();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return _carDal.GetAll();
-            }
-            // herhangi bir limitleme veya kosul olmadigindan direkt cardal daki methodu dondurduk.
-        }
-
-        public List<Car> GetAllByBrandId(int brandId)
-        {
-            // CarDal dakı getall methoduna linq u gonder
-            return _carDal.GetAll(c=> c.BrandId==brandId);
-        }
-
-        public List<Car> GetAllByColorId(int colorId)
-        {
-            // CarDal dakı getall methoduna linq u gonder
-            return _carDal.GetAll(c => c.ColorId == colorId);
-        }
-
-        public List<Car> GetAllByDailyPrice(decimal minPrice, decimal maxPrice)
-        {
-            // CarDal dakı getall methoduna linq u gonder
-            return _carDal.GetAll(c => c.DailyPrice>=minPrice && c.DailyPrice<=maxPrice);
-        }
-
-        public List<Car> GetAllByModelYear(int year)
-        {
-            // CarDal dakı getall methoduna linq u gonder
-            return _carDal.GetAll(c => c.ModelYear==year);
-        }
-
-        public List<CarDetailDto> GetAllWithDetails()
-        {
-            return _carDal.GetAllWithDetails();
-        }
-
-        public Car GetById(int carId)
-        {
-            return _carDal.Get(c => c.ID == carId);
-        }
-
-        public Car GetLastAddedCar()
-        {
-            return _carDal.GetGetLastAddedCar();
-        }
-
-        public void Update(Car car)
+        public IResult Update(Car car)
         {
             try
             {
                 if (car.DailyPrice > 0)
                 {
                     _carDal.Update(car);
-                    Console.WriteLine("Başarılı!");
+                    return new SuccessResult(Messages.CarUpdated);
+
                 }
-                else
-                {
-                    Console.WriteLine("Nesne guncelleme sartlarina uymuyor alanları kontrol et!");
-                }
+                    return new ErrorResult(Messages.CarCannotUpdated);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                return new ErrorResult(Messages.CarCannotUpdated + Environment.NewLine + ex.Message);
             }
         }
+
+        public IDataResult<List<Car>> GetAll()
+        {
+            try
+            {
+                return new SuccessDataResult<List<Car>>(_carDal.GetAll());
+            }
+            catch (Exception ex)
+            {
+                return new ErrorDataResult<List<Car>>(ex.Message);
+            }
+            // herhangi bir limitleme veya kosul olmadigindan direkt cardal daki methodu dondurduk.
+        }
+
+        public IDataResult<List<Car>> GetAllByBrandId(int brandId)
+        {
+            try
+            {
+                return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.BrandId == brandId));
+            }
+            catch (Exception ex)
+            {
+                return new ErrorDataResult<List<Car>>(ex.Message);
+            }
+            // CarDal dakı getall methoduna linq u gonder
+        }
+
+        public IDataResult<List<Car>> GetAllByColorId(int colorId)
+        {
+            try
+            {
+                return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.ColorId == colorId));
+            }
+            catch (Exception ex)
+            {
+                return new ErrorDataResult<List<Car>>(ex.Message);
+            }
+            // CarDal dakı getall methoduna linq u gonder
+        }
+
+        public IDataResult<List<Car>> GetAllByDailyPrice(decimal minPrice, decimal maxPrice)
+        {
+            try
+            {
+                return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.DailyPrice >= minPrice && c.DailyPrice <= maxPrice));
+            }
+            catch (Exception ex)
+            {
+                return new ErrorDataResult<List<Car>>(ex.Message);
+            }
+            // CarDal dakı getall methoduna linq u gonder
+        }
+
+        public IDataResult<List<Car>> GetAllByModelYear(int year)
+        {
+            try
+            {
+                return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.ModelYear == year));
+            }
+            catch (Exception ex)
+            {
+                return new ErrorDataResult<List<Car>>(ex.Message);
+            }
+            // CarDal dakı getall methoduna linq u gonder
+        }
+
+        public IDataResult<List<CarDetailDto>> GetAllWithDetails()
+        {
+            try
+            {
+                return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetAllWithDetails());
+            }
+            catch (Exception ex)
+            {
+                return new ErrorDataResult<List<CarDetailDto>>(ex.Message);
+            }
+        }
+
+        public IDataResult<Car> GetById(int carId)
+        {
+            try
+            {
+                return new SuccessDataResult<Car>(_carDal.Get(c => c.ID == carId));
+            }
+            catch (Exception ex)
+            {
+                return new ErrorDataResult<Car>(ex.Message);
+            }
+        }
+
+        public IDataResult<Car> GetLastAddedCar()
+        {
+            try
+            {
+                return new SuccessDataResult<Car>(_carDal.GetGetLastAddedCar());
+            }
+            catch (Exception ex)
+            {
+                return new ErrorDataResult<Car>(ex.Message);
+            }
+        }        
     }
 }
