@@ -110,7 +110,9 @@ namespace ConsoleUI
             //}
             #endregion
 
-
+            ColorManager colorManager = new ColorManager(new EfColorDal());
+            var result = colorManager.GetByName("kır");
+            
 
         }
 
