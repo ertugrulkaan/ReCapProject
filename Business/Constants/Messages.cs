@@ -16,6 +16,7 @@ namespace Business.Constants
         public static string CarCannotDeleted = "Araba silinemedi";
         public static string CarUpdated = "Araba güncellendi";
         public static string CarCannotUpdated = "Araba güncellenemedi";
+        public static string CarDailyPriceError = "Araba fiyatı sıfırdan büyük olmalıdır";
         #endregion
 
         #region BRANDMANAGERCONSTANTS
@@ -25,6 +26,7 @@ namespace Business.Constants
         public static string BrandCannotDeleted = "Marka silinemedi";
         public static string BrandUpdated = "Marka güncellendi";
         public static string BrandCannotUpdated = "Marka güncellenemedi";
+        public static string BrandNameMinimumLength = "Marka ismi minimum iki karakter olmalıdır";
 
         #endregion
 
@@ -35,6 +37,7 @@ namespace Business.Constants
         public static string ColorCannotDeleted = "Renk silinemedi";
         public static string ColorUpdated = "Renk güncellendi";
         public static string ColorCannotUpdated = "Renk güncellenemedi";
+        public static string ColorNameMinimumLength = "Renk ismi minimum iki karakter olmalıdır";
         #endregion
 
         #region USERMANAGERCONSTANTS
@@ -44,6 +47,7 @@ namespace Business.Constants
         public static string UserCannotDeleted = "Kullanıcı silinemedi";
         public static string UserUpdated = "Kullanıcı güncellendi";
         public static string UserCannotUpdated = "Kullanıcı güncellenemedi";
+        public static string UserIsNotValid = "Kullanıcı bulunamadı";
         #endregion
 
         #region CUSTOMERMANAGERCONSTANTS
@@ -57,12 +61,19 @@ namespace Business.Constants
 
         #region RENTALMANAGERCONSTANTS
         public static string CarRented = "Araba kiralandı";
+        public static string CarNotValid = "Araba geçerli değil";
         public static string CarCannotRented = "Araba kiralanamadı";
         public static string CarNotReturned = "Araba henüz teslim edilmedi";
 
         #endregion
 
+        
         public static string MaintenanceTime = "Bakim saati islem yapilamaz";
+        public static string EmptyError = "Bu alan boş olamaz";
+        public static string TwoCharError = "Minimum iki karakter olmalıdır";
+        public static string PasswordLenghtError = "Şifre minimum 4 maximum 15 karakter olabilir";
+        public static string EmailError = "Email geçerli değil yada sistemde kayıtlı";
+        public static string DuplicateError = "Eklenmeye çalışılan öğe veri tabanında olan bir öğedir. Tekrardan eklenemez!";
 
     }
 }

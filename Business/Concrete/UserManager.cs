@@ -1,5 +1,7 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -16,6 +18,8 @@ namespace Business.Concrete
         {
             _userDal = userDal;
         }
+
+        [ValidationAspect(typeof(UserValidator))]
         public IResult Add(User user)
         {
             try
@@ -42,6 +46,8 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.UserCannotDeleted + Environment.NewLine + ex.Message);
             }
         }
+
+        [ValidationAspect(typeof(UserValidator))]
         public IResult Update(User user)
         {
             try

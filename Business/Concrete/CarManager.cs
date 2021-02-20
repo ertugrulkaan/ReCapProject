@@ -1,5 +1,7 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -20,23 +22,19 @@ namespace Business.Concrete
             // newlemedik buraya gonderilen nesneden aldik herseyi
             _carDal = carDal;
         }
-
+        [ValidationAspect(typeof(CarValidator))]
         public IResult Add(Car car)
         {
-            // ORNEGIN EKLENEN ARABANIN GUNLUK FIYATI > 0 OLMALI
             try
             {
-                if (car.DailyPrice > 0)
-                {
-                    _carDal.Add(car);
-                    return new SuccessResult(Messages.CarAdded);
-                }
-                return new ErrorResult(Messages.CarCannotAdded);
+                _carDal.Add(car);
+                return new SuccessResult(Messages.CarAdded);
             }
             catch (Exception ex)
             {
                 return new ErrorResult(Messages.CarCannotAdded + Environment.NewLine + ex.Message);
             }
+
         }
         public IResult Delete(Car car)
         {
@@ -51,17 +49,13 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.CarCannotDeleted + Environment.NewLine + ex.Message);
             }
         }
+        [ValidationAspect(typeof(CarValidator))]
         public IResult Update(Car car)
         {
             try
             {
-                if (car.DailyPrice > 0)
-                {
-                    _carDal.Update(car);
-                    return new SuccessResult(Messages.CarUpdated);
-
-                }
-                    return new ErrorResult(Messages.CarCannotUpdated);
+                _carDal.Update(car);
+                return new SuccessResult(Messages.CarUpdated);
             }
             catch (Exception ex)
             {
@@ -168,6 +162,6 @@ namespace Business.Concrete
             {
                 return new ErrorDataResult<Car>(ex.Message);
             }
-        }        
+        }
     }
 }
