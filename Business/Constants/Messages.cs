@@ -19,6 +19,14 @@ namespace Business.Constants
         public static string CarDailyPriceError = "Araba fiyatı sıfırdan büyük olmalıdır";
         #endregion
 
+        #region CARIMAGEMANAGERCONSTANTS
+        public static string CarImageCannotAdded = "Araba fotografi eklenemedi.";
+        public static string CarImageCarIdEmpty = "Araba ID bos gecilemez.";
+        public static string CarImageCarNotFound = "Araba fotografi eklenemedi. Ilgili araba bulunamadi.";
+        public static string CarImageLimitError = "Araba basina max 5 fotograf eklenebilir.";
+        public static string CarImageAdded = "Araba fotografi eklendi";
+        #endregion
+
         #region BRANDMANAGERCONSTANTS
         public static string BrandAdded = "Marka eklendi";
         public static string BrandCannotAdded = "Marka eklenemedi";

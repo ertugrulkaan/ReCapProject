@@ -2,6 +2,7 @@
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -27,6 +28,14 @@ namespace Business.Concrete
         {
             try
             {
+                // iş kuralları bu yapı ile yazılmalıdır.
+                //IResult result = BusinessRules.Run(CheckIfCarDailyPriceCorrect());
+                ////yeni bir is kurali gelir ise uste virgul ile eklemek yeterli
+                //if (result != null)
+                //{
+                //    return result;
+                //}
+
                 _carDal.Add(car);
                 return new SuccessResult(Messages.CarAdded);
             }
@@ -34,7 +43,6 @@ namespace Business.Concrete
             {
                 return new ErrorResult(Messages.CarCannotAdded + Environment.NewLine + ex.Message);
             }
-
         }
         public IResult Delete(Car car)
         {
@@ -162,6 +170,16 @@ namespace Business.Concrete
             {
                 return new ErrorDataResult<Car>(ex.Message);
             }
+        }
+        private IResult CheckIfCarDailyPriceCorrect()
+        {
+            // örnek olması için ekledim içi boş
+            var result = _carDal.GetAll(p => p.DailyPrice == 0);
+            if (result !=null)
+            {
+                return new ErrorResult(Messages.CarDailyPriceError);
+            }
+            return new SuccessResult();
         }
     }
 }
