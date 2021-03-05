@@ -21,7 +21,7 @@ namespace Business.ValidationRules.FluentValidation
             // veri tabanindaki verilere bakar. mevcutta var ise false doner 
             using (ReCapProjectContext _context = new ReCapProjectContext())
             {
-                var user = _context.Users.Where(u => u.ID == id).FirstOrDefault();
+                var user = _context.Users.Where(u => u.Id == id).FirstOrDefault();
                 if (user == null)
                 {
                     return false;

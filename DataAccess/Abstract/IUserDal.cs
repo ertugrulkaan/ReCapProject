@@ -1,4 +1,5 @@
 ﻿using Core.DataAccess;
+using Core.Entities.Concrete;
 using Entities.Concrete;
 using System;
 using System.Collections.Generic;
@@ -10,5 +11,6 @@ namespace DataAccess.Abstract
     {
         // BU Bir DAL interface'idir. USER
 
+        List<OperationClaim> GetClaims(User user);
     }
 }

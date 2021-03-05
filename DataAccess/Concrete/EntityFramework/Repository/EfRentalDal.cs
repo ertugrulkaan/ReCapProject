@@ -21,7 +21,7 @@ namespace DataAccess.Concrete.EntityFramework.Repository
                              join c in context.Cars on r.CarID equals c.ID
                              join cl in context.Colors on c.ColorId equals cl.ID
                              join br in context.Brands on c.BrandId equals br.ID
-                             join u in context.Users on r.CustomerID equals u.ID
+                             join u in context.Users on r.CustomerID equals u.Id
                              select new RentalDetailDto
                              {
                                  RentalID = r.ID,
@@ -33,7 +33,7 @@ namespace DataAccess.Concrete.EntityFramework.Repository
                                  BrandName = br.BrandName,
                                  ColorName = cl.ColorName,
                                  DailyPrice = c.DailyPrice,
-                                 CustomerID = u.ID,
+                                 CustomerID = u.Id,
                                  CustomerFirstName = u.FirstName,
                                  CustomerLastName = u.LastName,
                                  CustomerEmail = u.Email

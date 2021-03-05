@@ -1,4 +1,5 @@
 ﻿using Business.Constants;
+using Core.Entities.Concrete;
 using DataAccess.Concrete.EntityFramework.Context;
 using Entities.Concrete;
 using FluentValidation;
@@ -15,7 +16,7 @@ namespace Business.ValidationRules.FluentValidation
 
             RuleFor(u => u.FirstName).NotEmpty().MinimumLength(2).WithMessage(Messages.TwoCharError);
             RuleFor(u => u.LastName).NotEmpty().MinimumLength(2).WithMessage(Messages.TwoCharError);
-            RuleFor(u => u.Password).NotEmpty().MinimumLength(4).MaximumLength(15).WithMessage(Messages.PasswordLenghtError);
+            //RuleFor(u => u.Password).NotEmpty().MinimumLength(4).MaximumLength(15).WithMessage(Messages.PasswordLenghtError);
             RuleFor(u => u.Email).NotEmpty().Must(EmailChecker).WithMessage(Messages.EmailError);
         }
 

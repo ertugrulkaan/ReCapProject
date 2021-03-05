@@ -36,7 +36,7 @@ namespace Business.ValidationRules.FluentValidation
         {
             using (ReCapProjectContext _context = new ReCapProjectContext())
             {
-                int user = _context.Users.Where(u => u.ID == id).Count();
+                int user = _context.Users.Where(u => u.Id == id).Count();
                 if (user == 0)
                 {
                     return false;
