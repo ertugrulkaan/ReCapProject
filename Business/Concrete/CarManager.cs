@@ -2,6 +2,7 @@
 using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Business;
 using Core.Utilities.Results;
@@ -25,6 +26,12 @@ namespace Business.Concrete
             _carDal = carDal;
         }
         [SecuredOperation("Admin")]
+        [CacheRemoveAspect("ICarService.GetAll")]
+        [CacheRemoveAspect("ICarService.GetAllByBrandId")]
+        [CacheRemoveAspect("ICarService.GetAllByColorId")]
+        [CacheRemoveAspect("ICarService.GetAllByDailyPrice")]
+        [CacheRemoveAspect("ICarService.GetAllByModelYear")]
+        [CacheRemoveAspect("ICarService.GetAllWithDetails")]
         [ValidationAspect(typeof(CarValidator))]
         public IResult Add(Car car)
         {
@@ -46,6 +53,13 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.CarCannotAdded + Environment.NewLine + ex.Message);
             }
         }
+        [SecuredOperation("Admin")]
+        [CacheRemoveAspect("ICarService.GetAll")]
+        [CacheRemoveAspect("ICarService.GetAllByBrandId")]
+        [CacheRemoveAspect("ICarService.GetAllByColorId")]
+        [CacheRemoveAspect("ICarService.GetAllByDailyPrice")]
+        [CacheRemoveAspect("ICarService.GetAllByModelYear")]
+        [CacheRemoveAspect("ICarService.GetAllWithDetails")]
         public IResult Delete(Car car)
         {
             try
@@ -59,6 +73,13 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.CarCannotDeleted + Environment.NewLine + ex.Message);
             }
         }
+        [SecuredOperation("Admin")]
+        [CacheRemoveAspect("ICarService.GetAll")]
+        [CacheRemoveAspect("ICarService.GetAllByBrandId")]
+        [CacheRemoveAspect("ICarService.GetAllByColorId")]
+        [CacheRemoveAspect("ICarService.GetAllByDailyPrice")]
+        [CacheRemoveAspect("ICarService.GetAllByModelYear")]
+        [CacheRemoveAspect("ICarService.GetAllWithDetails")]
         [ValidationAspect(typeof(CarValidator))]
         public IResult Update(Car car)
         {
@@ -72,7 +93,7 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.CarCannotUpdated + Environment.NewLine + ex.Message);
             }
         }
-
+        [CacheAspect]
         public IDataResult<List<Car>> GetAll()
         {
             try
@@ -86,6 +107,7 @@ namespace Business.Concrete
             // herhangi bir limitleme veya kosul olmadigindan direkt cardal daki methodu dondurduk.
         }
 
+        [CacheAspect]
         public IDataResult<List<Car>> GetAllByBrandId(int brandId)
         {
             try
@@ -99,6 +121,7 @@ namespace Business.Concrete
             // CarDal dakı getall methoduna linq u gonder
         }
 
+        [CacheAspect]
         public IDataResult<List<Car>> GetAllByColorId(int colorId)
         {
             try
@@ -112,6 +135,7 @@ namespace Business.Concrete
             // CarDal dakı getall methoduna linq u gonder
         }
 
+        [CacheAspect]
         public IDataResult<List<Car>> GetAllByDailyPrice(decimal minPrice, decimal maxPrice)
         {
             try
@@ -125,6 +149,7 @@ namespace Business.Concrete
             // CarDal dakı getall methoduna linq u gonder
         }
 
+        [CacheAspect]
         public IDataResult<List<Car>> GetAllByModelYear(int year)
         {
             try
@@ -138,6 +163,7 @@ namespace Business.Concrete
             // CarDal dakı getall methoduna linq u gonder
         }
 
+        [CacheAspect]
         public IDataResult<List<CarDetailDto>> GetAllWithDetails()
         {
             try
