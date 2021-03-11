@@ -1,4 +1,8 @@
-﻿ALTER TABLE [dbo].[Rentals] DROP CONSTRAINT [FK_Rentals_Users]
+﻿ALTER TABLE [dbo].[UserOperationClaims] DROP CONSTRAINT [FK_UserOperationClaims_Users]
+GO
+ALTER TABLE [dbo].[UserOperationClaims] DROP CONSTRAINT [FK_UserOperationClaims_OperationClaims]
+GO
+ALTER TABLE [dbo].[Rentals] DROP CONSTRAINT [FK_Rentals_Users]
 GO
 ALTER TABLE [dbo].[Rentals] DROP CONSTRAINT [FK_Rentals_Cars]
 GO
@@ -8,17 +12,25 @@ ALTER TABLE [dbo].[Cars] DROP CONSTRAINT [FK_Cars_Colors]
 GO
 ALTER TABLE [dbo].[Cars] DROP CONSTRAINT [FK_Cars_Brands]
 GO
+ALTER TABLE [dbo].[CarImages] DROP CONSTRAINT [FK_CarImages_Cars]
+GO
 ALTER TABLE [dbo].[Colors] DROP CONSTRAINT [UK_ColorName]
 GO
 DROP TABLE [dbo].[Users]
 GO
+DROP TABLE [dbo].[UserOperationClaims]
+GO
 DROP TABLE [dbo].[Rentals]
+GO
+DROP TABLE [dbo].[OperationClaims]
 GO
 DROP TABLE [dbo].[Customers]
 GO
 DROP TABLE [dbo].[Colors]
 GO
 DROP TABLE [dbo].[Cars]
+GO
+DROP TABLE [dbo].[CarImages]
 GO
 DROP TABLE [dbo].[Brands]
 GO
@@ -114,6 +126,22 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+CREATE TABLE [dbo].[CarImages](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[CarId] [int] NOT NULL,
+	[ImagePath] [nvarchar](100) NOT NULL,
+	[Date] [smalldatetime] NOT NULL,
+ CONSTRAINT [PK_CarImages] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
 CREATE TABLE [dbo].[Cars](
 	[ID] [int] IDENTITY(1,1) NOT NULL,
 	[ColorId] [int] NOT NULL,
@@ -162,6 +190,24 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[OperationClaims](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [varchar](250) NOT NULL,
+ CONSTRAINT [PK_OperationClaims] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
 CREATE TABLE [dbo].[Rentals](
 	[ID] [bigint] IDENTITY(1,1) NOT NULL,
 	[CarID] [int] NOT NULL,
@@ -179,18 +225,39 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[Users](
-	[ID] [int] IDENTITY(1,1) NOT NULL,
-	[FirstName] [nvarchar](30) NOT NULL,
-	[LastName] [nvarchar](30) NOT NULL,
-	[Email] [nvarchar](50) NOT NULL,
-	[Password] [nvarchar](30) NOT NULL,
- CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED 
+CREATE TABLE [dbo].[UserOperationClaims](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[UserId] [int] NOT NULL,
+	[OperationClaimId] [int] NOT NULL,
+ CONSTRAINT [PK_UserOperationClaims] PRIMARY KEY CLUSTERED 
 (
-	[ID] ASC
+	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Users](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[FirstName] [varchar](50) NOT NULL,
+	[LastName] [varchar](50) NOT NULL,
+	[Email] [varchar](50) NOT NULL,
+	[PasswordHash] [varbinary](500) NOT NULL,
+	[PasswordSalt] [varbinary](500) NOT NULL,
+	[Status] [bit] NOT NULL,
+ CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
 GO
 SET IDENTITY_INSERT [dbo].[Brands] ON 
 
@@ -213,7 +280,22 @@ INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (8, N'Fiat')
 GO
 INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (10, N'Citroen')
 GO
+INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (1012, N'Ferrari')
+GO
+INSERT [dbo].[Brands] ([ID], [BrandName]) VALUES (1013, N'Dodge')
+GO
 SET IDENTITY_INSERT [dbo].[Brands] OFF
+GO
+SET IDENTITY_INSERT [dbo].[CarImages] ON 
+
+GO
+INSERT [dbo].[CarImages] ([ID], [CarId], [ImagePath], [Date]) VALUES (1, 1, N'1dc8e2e6-a4aa-4616-987c-a23f56bf1a4f_2021-02-27-13-46.jpg', CAST(N'2021-02-27 13:47:00' AS SmallDateTime))
+GO
+INSERT [dbo].[CarImages] ([ID], [CarId], [ImagePath], [Date]) VALUES (2, 1, N'ab517ec1-0796-4e71-96f0-82450ed093f6_2021-02-27-13-49.jpg', CAST(N'2021-02-27 13:49:00' AS SmallDateTime))
+GO
+INSERT [dbo].[CarImages] ([ID], [CarId], [ImagePath], [Date]) VALUES (3, 3, N'91cac90c-d5e7-48ad-a64c-956829091cb2_2021-02-27-14-06.jpg', CAST(N'2021-02-27 14:07:00' AS SmallDateTime))
+GO
+SET IDENTITY_INSERT [dbo].[CarImages] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Cars] ON 
 
@@ -236,7 +318,11 @@ INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [CarName], [ModelYear], [DailyP
 GO
 INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [CarName], [ModelYear], [DailyPrice], [Description]) VALUES (10, 9, 2, N'BMW 5.20i', 2021, CAST(350.00 AS Decimal(18, 2)), N'Dizel, Düz vites, Sunroof var')
 GO
-INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [CarName], [ModelYear], [DailyPrice], [Description]) VALUES (11, 2, 10, N'Citroen C3 ', 2019, CAST(195.00 AS Decimal(18, 2)), N'Otomatik vites dizel ekonomik')
+INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [CarName], [ModelYear], [DailyPrice], [Description]) VALUES (11, 4, 10, N'Citroen C3 ', 2021, CAST(250.00 AS Decimal(18, 2)), N'Otomatik vites dizel ekonomik')
+GO
+INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [CarName], [ModelYear], [DailyPrice], [Description]) VALUES (1012, 4, 6, N'Renault Megane', 2018, CAST(300.00 AS Decimal(18, 2)), N'Dizel, Düz vites, Sunroof var')
+GO
+INSERT [dbo].[Cars] ([ID], [ColorId], [BrandId], [CarName], [ModelYear], [DailyPrice], [Description]) VALUES (1013, 4, 1, N'Mercedes A200 amg', 2018, CAST(300.00 AS Decimal(18, 2)), N'Dizel, Düz vites, Sunroof var')
 GO
 SET IDENTITY_INSERT [dbo].[Cars] OFF
 GO
@@ -272,33 +358,36 @@ GO
 SET IDENTITY_INSERT [dbo].[Customers] ON 
 
 GO
-INSERT [dbo].[Customers] ([ID], [UserID], [CompanyName]) VALUES (1, 3, N'TEST SIRKETI')
-GO
-INSERT [dbo].[Customers] ([ID], [UserID], [CompanyName]) VALUES (3, 1, N'ALI SIRKETI')
+INSERT [dbo].[Customers] ([ID], [UserID], [CompanyName]) VALUES (1005, 1, N'EG')
 GO
 SET IDENTITY_INSERT [dbo].[Customers] OFF
 GO
-SET IDENTITY_INSERT [dbo].[Rentals] ON 
+SET IDENTITY_INSERT [dbo].[OperationClaims] ON 
 
 GO
-INSERT [dbo].[Rentals] ([ID], [CarID], [CustomerID], [RentDate], [ReturnDate]) VALUES (12, 1, 1, CAST(N'2021-02-11 23:55:00' AS SmallDateTime), CAST(N'2021-02-13 23:55:00' AS SmallDateTime))
+INSERT [dbo].[OperationClaims] ([Id], [Name]) VALUES (1, N'Admin')
 GO
-INSERT [dbo].[Rentals] ([ID], [CarID], [CustomerID], [RentDate], [ReturnDate]) VALUES (13, 2, 3, CAST(N'2021-02-11 23:56:00' AS SmallDateTime), CAST(N'2021-02-13 00:00:00' AS SmallDateTime))
+INSERT [dbo].[OperationClaims] ([Id], [Name]) VALUES (2, N'Moderator')
 GO
-INSERT [dbo].[Rentals] ([ID], [CarID], [CustomerID], [RentDate], [ReturnDate]) VALUES (14, 3, 1, CAST(N'2021-02-11 23:56:00' AS SmallDateTime), NULL)
+INSERT [dbo].[OperationClaims] ([Id], [Name]) VALUES (3, N'car.add')
 GO
-INSERT [dbo].[Rentals] ([ID], [CarID], [CustomerID], [RentDate], [ReturnDate]) VALUES (15, 4, 3, CAST(N'2021-02-11 23:56:00' AS SmallDateTime), CAST(N'2021-02-13 23:56:00' AS SmallDateTime))
+SET IDENTITY_INSERT [dbo].[OperationClaims] OFF
 GO
-INSERT [dbo].[Rentals] ([ID], [CarID], [CustomerID], [RentDate], [ReturnDate]) VALUES (17, 2, 3, CAST(N'2021-02-17 00:01:00' AS SmallDateTime), CAST(N'2021-02-27 00:01:00' AS SmallDateTime))
+SET IDENTITY_INSERT [dbo].[UserOperationClaims] ON 
+
 GO
-SET IDENTITY_INSERT [dbo].[Rentals] OFF
+INSERT [dbo].[UserOperationClaims] ([Id], [UserId], [OperationClaimId]) VALUES (1, 1, 1)
+GO
+INSERT [dbo].[UserOperationClaims] ([Id], [UserId], [OperationClaimId]) VALUES (2, 1, 2)
+GO
+INSERT [dbo].[UserOperationClaims] ([Id], [UserId], [OperationClaimId]) VALUES (3, 1, 3)
+GO
+SET IDENTITY_INSERT [dbo].[UserOperationClaims] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Users] ON 
 
 GO
-INSERT [dbo].[Users] ([ID], [FirstName], [LastName], [Email], [Password]) VALUES (1, N'Ertuğrul Kaan', N'Özdemir', N'test@test.com', N'12345')
-GO
-INSERT [dbo].[Users] ([ID], [FirstName], [LastName], [Email], [Password]) VALUES (3, N'Ali', N'Ozdemir', N'asdasd@test.com', N'12345')
+INSERT [dbo].[Users] ([Id], [FirstName], [LastName], [Email], [PasswordHash], [PasswordSalt], [Status]) VALUES (1, N'erto', N'erto', N'erto@erto.com', 0xACF27BB7B5670E1552E3576583FAAF5D3425CD9F30C6F9DE6F878CE8CE1E5AC898B06C3ADA900E61C94049AA6BFCC8607B6CFE466DE306961427F3330821C493, 0x7068EDEBE170A744FA46F9E36421C996EBADB98B2084B2EC13EEE776038074BBFC918A81D20EB4A5708EDAA06165E1A9FD14B0FDC5DB351E32153274ADCCFDBFCE73B1190D9475E7A623FB20EB10FF8659ACB68683618033D14C51878FA826A73F9BB1F5B6627579FB819A7512F6E9E49329D062B2F8E0583D11A43AAC88D21C, 1)
 GO
 SET IDENTITY_INSERT [dbo].[Users] OFF
 GO
@@ -306,6 +395,11 @@ ALTER TABLE [dbo].[Colors] ADD  CONSTRAINT [UK_ColorName] UNIQUE NONCLUSTERED
 (
 	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CarImages]  WITH CHECK ADD  CONSTRAINT [FK_CarImages_Cars] FOREIGN KEY([CarId])
+REFERENCES [dbo].[Cars] ([ID])
+GO
+ALTER TABLE [dbo].[CarImages] CHECK CONSTRAINT [FK_CarImages_Cars]
 GO
 ALTER TABLE [dbo].[Cars]  WITH CHECK ADD  CONSTRAINT [FK_Cars_Brands] FOREIGN KEY([BrandId])
 REFERENCES [dbo].[Brands] ([ID])
@@ -318,7 +412,7 @@ GO
 ALTER TABLE [dbo].[Cars] CHECK CONSTRAINT [FK_Cars_Colors]
 GO
 ALTER TABLE [dbo].[Customers]  WITH CHECK ADD  CONSTRAINT [FK_Customers_Users1] FOREIGN KEY([UserID])
-REFERENCES [dbo].[Users] ([ID])
+REFERENCES [dbo].[Users] ([Id])
 GO
 ALTER TABLE [dbo].[Customers] CHECK CONSTRAINT [FK_Customers_Users1]
 GO
@@ -328,9 +422,19 @@ GO
 ALTER TABLE [dbo].[Rentals] CHECK CONSTRAINT [FK_Rentals_Cars]
 GO
 ALTER TABLE [dbo].[Rentals]  WITH CHECK ADD  CONSTRAINT [FK_Rentals_Users] FOREIGN KEY([CustomerID])
-REFERENCES [dbo].[Users] ([ID])
+REFERENCES [dbo].[Users] ([Id])
 GO
 ALTER TABLE [dbo].[Rentals] CHECK CONSTRAINT [FK_Rentals_Users]
+GO
+ALTER TABLE [dbo].[UserOperationClaims]  WITH CHECK ADD  CONSTRAINT [FK_UserOperationClaims_OperationClaims] FOREIGN KEY([OperationClaimId])
+REFERENCES [dbo].[OperationClaims] ([Id])
+GO
+ALTER TABLE [dbo].[UserOperationClaims] CHECK CONSTRAINT [FK_UserOperationClaims_OperationClaims]
+GO
+ALTER TABLE [dbo].[UserOperationClaims]  WITH CHECK ADD  CONSTRAINT [FK_UserOperationClaims_Users] FOREIGN KEY([UserId])
+REFERENCES [dbo].[Users] ([Id])
+GO
+ALTER TABLE [dbo].[UserOperationClaims] CHECK CONSTRAINT [FK_UserOperationClaims_Users]
 GO
 ALTER DATABASE [CarRentalDb] SET  READ_WRITE 
 GO
