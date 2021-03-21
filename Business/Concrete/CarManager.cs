@@ -176,6 +176,18 @@ namespace Business.Concrete
             }
         }
 
+        public IDataResult<List<CarDetailDto>> GetAllWithDetailsByBrandId()
+        {
+            try
+            {
+                return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetAllWithDetails());
+            }
+            catch (Exception ex)
+            {
+                return new ErrorDataResult<List<CarDetailDto>>(ex.Message);
+            }
+        }
+
         public IDataResult<Car> GetById(int carId)
         {
             try
@@ -208,6 +220,16 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.CarDailyPriceError);
             }
             return new SuccessResult();
+        }
+
+        public IDataResult<List<CarDetailWithImageDto>> GetAllCarDetailsByBrandId(int id)
+        {
+            return new SuccessDataResult<List<CarDetailWithImageDto>>(_carDal.GetAllWithDetailsForNG(p => p.BrandId == id));
+        }
+
+        public IDataResult<List<CarDetailWithImageDto>> GetAllCarDetailsByColorId(int id)
+        {
+            return new SuccessDataResult<List<CarDetailWithImageDto>>(_carDal.GetAllWithDetailsForNG(p => p.ColorId == id));
         }
     }
 }

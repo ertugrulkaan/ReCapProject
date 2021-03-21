@@ -41,6 +41,32 @@ namespace DataAccess.Concrete.EntityFramework.Repository
 
         }
 
+        public List<CarDetailWithImageDto> GetAllWithDetailsForNG(Expression<Func<CarDetailWithImageDto, bool>> filter = null)
+        {
+            using (ReCapProjectContext context = new ReCapProjectContext())
+            {
+                var result = from c in context.Cars
+                             join b in context.Brands on c.BrandId equals b.ID
+                             join cl in context.Colors on c.ColorId equals cl.ID
+                             join im in context.CarImages on c.ID equals im.CarId
+                             select new CarDetailWithImageDto
+                             {
+                                 CarId = c.ID,
+                                 ImagePath = im.ImagePath,
+                                 Description = c.Description,
+                                 BrandId = b.ID,
+                                 BrandName = b.BrandName,
+                                 CarImageDate = im.Date,
+                                 ColorId = cl.ID,
+                                 ColorName = cl.ColorName,
+                                 DailyPrice = c.DailyPrice,
+                                 ModelYear = c.ModelYear
+                             };
+                return filter == null ? result.ToList() : result.Where(filter).ToList();
+
+            }
+        }
+
         public Car GetGetLastAddedCar()
         {
             using (ReCapProjectContext context = new ReCapProjectContext())

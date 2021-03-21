@@ -3,6 +3,7 @@ using Entities.Concrete;
 using Entities.DTOs;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace DataAccess.Abstract
@@ -12,5 +13,6 @@ namespace DataAccess.Abstract
         // BU Bir DAL interface'idir. CAR
         List<CarDetailDto> GetAllWithDetails();
         Car GetGetLastAddedCar();
+        List<CarDetailWithImageDto> GetAllWithDetailsForNG(Expression<Func<CarDetailWithImageDto, bool>> filter = null);
     }
 }
